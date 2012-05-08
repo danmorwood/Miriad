@@ -5,3 +5,6 @@ domain.o: domain.h domain.cpp
 
 plan.o: domain.h plan.h plan.cpp
 	g++ $(FLAGS) -c -o plan.o plan.cpp
+
+clean:
+	rm *.o
