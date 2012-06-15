@@ -1,0 +1,5 @@
+#include "../InteriorPoint.h"
+
+int main() {
+	return 0;
+}

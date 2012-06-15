@@ -30,14 +30,22 @@ class Precondition {
 		Precondition(Literal* literal, bool value, bool known);
 	private:
 		Literal* mLiteral;
-		bool mValue; bool mKnown; };
+		bool mValue; 
+		bool mKnown; 
+};
 
 class Action {
 	public:
 		Action(std::string name);
 		void AddEffect(Effect* effect);
 		void AddPrecondition(Precondition* precondition);
+		void setUpperBoundOnDurration(double ub);
+		void setLowerBoundOnDurration(double lb);
+		double LBDurration();
+		double UBDurration();
 	private:
+		double mLBDurration;
+		double mUBDurration;
 		std::string mName;
 		std::vector<Effect*> mEffects;
 		std::vector<Precondition*> mPreconditions;
@@ -47,11 +55,13 @@ class Domain {
 	public:
 		Domain();
 		Domain(const char* filename);
+		void LoadTestDomain();
 		Literal* LookupLiteral(std::string name);
 		Action* LookupAction(std::string name);
 		void AddGoal(Precondition* goal);
 		void InitialState(Effect* initialState);
 	private:
+		double mDeadline;
 		std::vector<Action*> mActions;
 		std::vector<Precondition*> mGoals;
 		std::vector<Effect*> mInitialState;

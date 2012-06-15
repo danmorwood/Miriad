@@ -1,0 +1,6 @@
+Okay so I have a basic sparse matrix class. I need to figure out how to do the
+two algorithms with this class so that I don't iterate over all of the thing. 
+
+K I need to add in a deadline for the overall plan so this is a constraint that
+is not linked to any step in the plan. But it is still just a constraint that
+means that I have one inequality and one equakity that need to be added. 

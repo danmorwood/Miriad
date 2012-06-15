@@ -19,7 +19,13 @@ ADD neq(ADD add, double value) {
 		return add.Cmpl().Cmpl();
 }
 
-SparceMatrix::SparceMatrix(unsigned int n, unsigned int m) {
+SparceMatrix::SparceMatrix(unsigned int n = 0, unsigned int m = 0) {
+	sizeN = n;
+	mData.resize(n);
+	sizeM = m;
+}
+
+void SparceMatrix::resize(unsigned int n, unsigned int m) {
 	sizeN = n;
 	mData.resize(n);
 	sizeM = m;
@@ -37,17 +43,37 @@ void SparceMatrix::set(unsigned int x, unsigned int y, valueType value) {
 		mData[x][y] = value;
 }
 
-valueType SparceMatrix::get(unsigned int x, unsigned int y) {
+valueType SparceMatrix::get(unsigned int x, unsigned int y) const {
 	if(x >= sizeN || y >= sizeM) {
 		printf("Error: array out of bounds... requested [%d, %d] in matrix of size [%d, %d]\n",
 				x, y, sizeN, sizeM);
 		return BACKGROUND;
 	}
-	map<unsigned int, valueType>::iterator it = mData[x].find(y);
+	map<unsigned int, valueType>::const_iterator it = mData[x].find(y);
 	if(it == mData[x].end())
 		return BACKGROUND;
 	else
 		return it->second;
+}
+
+void SparceMatrix::insertWithOffset(SparceMatrix super, int rOffset, int cOffset) const {
+	for(int i = 0; i < mData.size(); i++) {
+		for(map<unsigned int, valueType>::const_iterator it = mData[i].begin();
+				it != mData[i].end(); it++) {
+			super.set(rOffset+i, cOffset+it->first, it->second);
+		}
+	}
+}
+
+SparceMatrix SparceMatrix::Transpose() {
+	SparceMatrix T(sizeN, sizeM);
+	for(int i = 0; i < mData.size(); i++) {
+		for(map<unsigned int, valueType>::const_iterator it = mData[i].begin();
+				it != mData[i].end(); it++) {
+			T.set(it->first, i, it->second); 
+		}
+	}
+	return T;
 }
 
 void SparceMatrix::swapRow(unsigned int r1, unsigned int r2) {
@@ -232,3 +258,96 @@ ADDvector SparceMatrix::Solve(ADDvector pi, ADDvector b) {
 	return x;
 }
 
+SparceMatrix diag(ADDvector v) {
+	SparceMatrix ret(v.count(), v.count());
+	for(int i = 0; i < v.count(); i++) {
+		ret.set(i,i,v[i]);
+	}
+	return ret;
+}
+
+SparceMatrix SparceMatrix::operator-() const {
+	SparceMatrix ret(sizeN, sizeM);
+	for(int i = 0; i < mData.size(); i++) {
+		for(map<unsigned int, valueType>::const_iterator it = mData[i].begin();
+				it != mData[i].end(); it++) {
+			ret.set(i, it->first, -it->second);
+		}
+	}
+	return ret;
+}
+
+SparceMatrix SparceMatrix::operator*(const SparceMatrix& rhs) const {
+	SparceMatrix ans(sizeN, rhs.sizeM);
+	for(int i = 0; i < sizeN; i++) {
+		for(int j = 0; j < rhs.sizeM; j++) {
+			ADD val = mgr.addZero();
+			for(map<unsigned int, valueType>::const_iterator it = mData[i].begin();
+					it != mData[i].end(); it++) {
+				val += it->second * rhs.get(it->first, j);
+			}
+			ans.set(i, j, val);
+		}
+	}
+	return ans;
+}
+
+ADDvector SparceMatrix::operator*(const ADDvector& rhs) const {
+	if(sizeM != rhs.count())
+		printf("dimentional miss match in matrix vector multiplication\n");
+	ADDvector ans(sizeN);
+	for(int i = 0; i < sizeN; i++) {
+		ans[i] = mgr.addZero();
+		for(map<unsigned int, valueType>::const_iterator it = mData[i].begin();
+				it != mData[i].end(); it++) {
+			ans[i] += it->second * rhs[it->first];
+		}
+	}
+	return ans;
+}
+
+ADDvector operator+(const ADDvector& lhs, const ADDvector& rhs) {
+	if(lhs.count() != rhs.count())
+		printf("dimentional miss-match in addvector addition\n");
+	ADDvector ans(rhs.count());
+	for(int i = 0; i < rhs.count(); i++) {
+		ans[i] = lhs[i] + rhs[i];
+	}
+	return ans;
+}
+
+ADDvector operator-(const ADDvector& lhs, const ADDvector& rhs) {
+	if(lhs.count() != rhs.count())
+		printf("dimentional miss-match in addvector addition\n");
+	ADDvector ans(rhs.count());
+	for(int i = 0; i < rhs.count(); i++) {
+		ans[i] = lhs[i] - rhs[i];
+	}
+	return ans;
+}
+
+ADDvector operator-(const ADDvector& rhs) {
+	ADDvector ans(rhs.count());
+	for(int i = 0; i < rhs.count(); i++) {
+		ans[i] = -rhs[i];
+	}
+	return ans;
+}
+
+ADD dotProduct(ADDvector v1, ADDvector v2) {
+	if(v1.count() != v2.count())
+		printf("dimentional error in dot product\n");
+	ADD total = mgr.addOne();
+	for(int i = 0; i < v1.count(); i++) {
+		total += v1[i] * v2[i];
+	}
+	return total;
+}
+
+ADDvector ConstVector(double value, int size) {
+	ADDvector ret(size);
+	for(int i = 0; i < size; i++) {
+		ret[i] = mgr.constant(value);
+	}
+	return ret;
+}

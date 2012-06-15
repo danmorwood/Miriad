@@ -37,11 +37,53 @@ void Action::AddPrecondition(Precondition* precondition) {
 	mPreconditions.push_back(precondition);
 }
 
+void Action::setUpperBoundOnDurration(double ub) {
+	mUBDurration = ub;
+}
+
+void Action::setLowerBoundOnDurration(double lb) {
+	mLBDurration = lb;
+}
+
+double Action::UBDurration() {
+	return mUBDurration;
+}
+
+double Action::LBDurration() {
+	return mLBDurration;
+}
+
+void Domain::LoadTestDomain() {
+	//Literals
+	Literal* P = new Literal("P");
+	mLiteralDirectory["P"] = P;
+	Literal* Q = new Literal("Q");
+	mLiteralDirectory["Q"] = Q;
+
+	//Actions
+	Action* A1 = new Action("A1");
+	A1->setLowerBoundOnDurration(3);
+	A1->setUpperBoundOnDurration(5);
+	A1->AddPrecondition(new Precondition(P, true, true));
+	A1->AddEffect(new Effect(Q, AddEffect, true));
+	mActionDirectory["A1"] = A1;
+
+	//Initial State
+	InitialState(new Effect(P, AddEffect, true));
+
+	//Goal
+	AddGoal(new Precondition(Q, true, true));
+
+	//Deadline
+	mDeadline = 4;
+}
+
 Domain::Domain() {
+	LoadTestDomain();
 }
 
 Domain::Domain(const char* filename) {
-
+	//Dang I wish this was implemented...
 }
 
 void Domain::InitialState(Effect* initialState) {
