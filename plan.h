@@ -73,6 +73,8 @@ class Plan {
 		ADDvector getInitalX();
 
 	private:
+		double Deadline;
+		Step* FrameStep;
 		unsigned int numSlackVars;
 		unsigned int numUnknownDurations;
 		Domain* mDomain;

@@ -1,4 +1,4 @@
-CUDD_HOME=/home/dmorwood/code/cudd-2.4.2
+CUDD_HOME=/home/daniel/code/cudd-2.4.2
 FLAGS    =-g
 INCLUDES =-I$(CUDD_HOME)/include/
 LIBDIR   =-L$(CUDD_HOME)/cudd/ -L$(CUDD_HOME)/util/ -L$(CUDD_HOME)/mtr -L$(CUDD_HOME)/st -L$(CUDD_HOME)/epd -L$(CUDD_HOME)/obj

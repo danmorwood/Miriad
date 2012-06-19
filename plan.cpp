@@ -116,7 +116,7 @@ SparceMatrix* Plan::A() {
 }
 
 void Plan::CalcEncoding() {
-	int n = mOrderings.size() + mSteps.size();
+	int n = mOrderings.size() + mSteps.size() + 1;
 	if(mA)
 		delete mA;
 	mA = new SparceMatrix(n, mSteps.size()*3 + n);
@@ -164,5 +164,22 @@ void Plan::CalcEncoding() {
 		(*mb)[row] = mgr.constant(epsilon);
 		row++;
 		k++;
+	}
+
+	mA->set(row, getStepCol(FrameStep, StepTime::Start), -mgr.addOne());
+	mA->set(row, getStepCol(FrameStep, StepTime::End), mgr.addOne());
+	mA->set(row, getSlackVar(k), -mgr.addOne());
+	(*mb)[row] = mgr.constant(Deadline);
+	row++;
+	k++;
+	int index = 0;
+	mf.resize(k+x.count());
+	for(int i = 0; i < k; i++) {
+		mf[index].index = getSlackVar(i);
+		mf[index].inverted = false;
+		index++;
+	}
+	for(int i = 0; i < x.count(); i++) {
+		mf[index] = i;
 	}
 }
