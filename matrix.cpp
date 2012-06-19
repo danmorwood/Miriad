@@ -334,6 +334,14 @@ ADDvector operator-(const ADDvector& rhs) {
 	return ans;
 }
 
+int SparceMatrix::getNumRows() {
+	return sizeN;
+}
+
+int SparceMatrix::getNumCols() {
+	return sizeM;
+}
+
 ADD dotProduct(ADDvector v1, ADDvector v2) {
 	if(v1.count() != v2.count())
 		printf("dimentional error in dot product\n");

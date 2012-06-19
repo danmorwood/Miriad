@@ -3,7 +3,7 @@
 #include "plan.h"
 #include <vector>
 
-double evaluate(const Plan& p);
+double evaluate(Plan& p);
 
 class OptimizationProblem {
 	public:

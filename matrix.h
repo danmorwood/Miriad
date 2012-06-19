@@ -34,6 +34,8 @@ class SparceMatrix {
 		SparceMatrix operator-() const;
 		SparceMatrix operator*(const SparceMatrix& rhs) const;
 		ADDvector operator*(const ADDvector& rhs) const;
+		int getNumRows();
+		int getNumCols();
 
 	private:
 		std::vector< std::map<unsigned int, valueType> > mData;

@@ -173,13 +173,14 @@ void Plan::CalcEncoding() {
 	row++;
 	k++;
 	int index = 0;
-	mf.resize(k+x.count());
+	mf.resize(k+mA->getNumCols());
 	for(int i = 0; i < k; i++) {
 		mf[index].index = getSlackVar(i);
 		mf[index].inverted = false;
 		index++;
 	}
-	for(int i = 0; i < x.count(); i++) {
-		mf[index] = i;
+
+	for(int i = 0; i < mA->getNumCols(); i++) {
+		mf[i].index = i;
 	}
 }
