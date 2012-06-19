@@ -83,6 +83,18 @@ int Plan::getSlackVar(int k) {
 	return numOfUnknownDurations + mSteps.size() + k;
 }
 
+void Plan::addStep(Action* action) {
+	mSteps.push_back(new Step(action));
+}
+
+void Plan::addOrdering(Ordering* ordering) {
+	mOrderings.push_back(ordering);
+}
+
+void Plan::addLink(Link* link) {
+	mLinks.push_back(link);
+}
+
 SparceMatrix Plan::DF_x(bool phase1 = false) {
 	int sizeOfX = numOfUnknownDurations + mSteps.size() + numSlackVars;
 	if(phase1)

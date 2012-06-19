@@ -61,6 +61,11 @@ class Plan {
 		int getSlackVar(int i);
 		int getStepCol(Step* step, StepTime::Time time);
 
+		void addStep(Action* action);
+		void addOrdering(Ordering* order);
+		void addLink(Link* link);
+		void setPlanDeadline(double deadline);
+
 		SparceMatrix* A();
 		ADDvector F(ADDvector x, bool phase1);
 		SparceMatrix DF_x(bool phase1);
@@ -74,6 +79,8 @@ class Plan {
 		std::vector<Step*> mSteps;
 		std::vector<Link*> mLinks;
 		std::vector<Ordering*> mOrderings;
+		//the step representing the initial and goal dummy steps
+		Step* InitGoal;
 		
 		//Used for encoding plan
 		SparceMatrix* mA;

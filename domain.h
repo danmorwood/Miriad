@@ -55,6 +55,7 @@ class Domain {
 	public:
 		Domain();
 		Domain(const char* filename);
+		void AddAction(Action* action);
 		void LoadTestDomain();
 		Literal* LookupLiteral(std::string name);
 		Action* LookupAction(std::string name);

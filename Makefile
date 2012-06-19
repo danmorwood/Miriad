@@ -23,6 +23,5 @@ matrixTest: tests/matrixTest.cpp matrix.o
 
 IPTest: tests/InteriorPointTest.cpp InteriorPoint.o matrix.o plan.o domain.o
 	g++ $(FLAGS) $(INCLUDES) -o IPTest tests/InteriorPointTest.cpp InteriorPoint.o matrix.o plan.o domain.o $(LIBDIR) $(LIBS)
-
 clean:
 	rm *.o
